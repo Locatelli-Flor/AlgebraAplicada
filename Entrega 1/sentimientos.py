@@ -1,9 +1,8 @@
-import random
 import numpy as np
 import re
 
 file_path = "./Entrega 1/frases.txt"
-dict_feelings = {
+feelings_dictionary = {
     'dolor': -1,
     'oscura': -1,
     'perdida': -1,
@@ -24,12 +23,10 @@ dict_feelings = {
     'troya': -1,
     'muerta': -1,
     'final': 0,
-    'via': 0,
-    'sabe': 0
+    'via': 0
 }
 
-
-def getPhrases(path):
+def get_phrases(path):
     phrases = []
     with open(path, "r") as file:
         for line in file:
@@ -38,37 +35,32 @@ def getPhrases(path):
             phrases.append(cleaned_phrase)
     return phrases
 
-
-def calcular_vectores(frase, palabras_clave, clasificacion):
-    w = np.array([1 if palabra in frase else 0 for palabra in palabras_clave])
+def calculate_vectors(frase, key_words, clasificacion):
+    w = np.array([1 if word in frase else 0 for word in key_words])
     s = np.array([
-        sum([1 for palabra in palabras_clave if palabra in frase and clasificacion[palabra] == 1]),
-        sum([1 for palabra in palabras_clave if palabra in frase and clasificacion[palabra] == 0]),
-        sum([1 for palabra in palabras_clave if palabra in frase and clasificacion[palabra] == -1])
+        sum([1 for word in key_words if word in frase and clasificacion[word] == 1]),
+        sum([1 for word in key_words if word in frase and clasificacion[word] == 0]),
+        sum([1 for word in key_words if word in frase and clasificacion[word] == -1])
     ])
     return w, s
 
-
-def calcular_calidad_sentimiento(w, s, total_palabras_clave):
-    calidad_promedio = np.sum(w) / total_palabras_clave
-    promedio_sentimiento = np.dot([1, 0, -1], s)
-    return calidad_promedio, promedio_sentimiento
+def calculate_feeling_quality(w, s, total_key_words):
+    average_quality = np.sum(w) / total_key_words
+    average_feeling = np.dot([1, 0, -1], s)
+    return average_quality, average_feeling
         
-    
+phrases = get_phrases(file_path)
+selected_words = list(feelings_dictionary.keys())
+total_key_words = len(feelings_dictionary)
 
-phrases = getPhrases(file_path)
-random_words = random.sample(list(dict_feelings.keys()), 6)
-total_palabras_clave = len(dict_feelings)
-print(f"Palabras clave: {random_words}")
-
-for i, frase in enumerate(phrases):
-    w, s = calcular_vectores(frase, random_words, dict_feelings)
-    calidad_promedio, promedio_sentimiento = calcular_calidad_sentimiento(w, s, total_palabras_clave)
+for i, phrase in enumerate(phrases):
+    w, s = calculate_vectors(phrase, selected_words, feelings_dictionary)
+    average_quality, average_feeling = calculate_feeling_quality(w, s, total_key_words)
     
-    print(f"Frase {i+1}: {frase}")
+    print(f"Frase {i+1}: {phrase}")
     print(f"Vector w: {w}")
     print(f"Vector s: {s}")
-    print(f"Calidad Promedio: {calidad_promedio:.2f}")
-    print(f"Promedio de Sentimiento: {promedio_sentimiento:.2f}")
+    print(f"Calidad Promedio: {average_quality:.2f}")
+    print(f"Promedio de Sentimiento: {average_feeling:.2f}")
     print("------")
 
