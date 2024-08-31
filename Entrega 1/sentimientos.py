@@ -29,6 +29,7 @@ feelings_dictionary = {
     'victoria': 1
 }
 
+
 def get_phrases(path):
     phrases = []
     with open(path, "r") as file:
@@ -37,6 +38,7 @@ def get_phrases(path):
             cleaned_phrase = ' '.join(words)
             phrases.append(cleaned_phrase)
     return phrases
+
 
 def calculate_vectors(frase, key_words, clasificacion):
     w = np.array([1 if word in frase else 0 for word in key_words])
@@ -47,10 +49,12 @@ def calculate_vectors(frase, key_words, clasificacion):
     ])
     return w, s
 
+
 def calculate_feeling_quality(w, s, total_key_words):
     average_quality = np.sum(w) / total_key_words
     average_feeling = np.dot([1, 0, -1], s)
     return average_quality, average_feeling
+
         
 phrases = get_phrases(file_path)
 selected_words = list(feelings_dictionary.keys())
