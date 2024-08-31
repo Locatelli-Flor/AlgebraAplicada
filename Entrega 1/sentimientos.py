@@ -2,7 +2,7 @@ import random
 import numpy as np
 import re
 
-file_path = "./frases.txt"
+file_path = "./Entrega 1/frases.txt"
 dict_feelings = {
     'dolor': -1,
     'oscura': -1,
@@ -24,7 +24,8 @@ dict_feelings = {
     'troya': -1,
     'muerta': -1,
     'final': 0,
-    'via': 0
+    'via': 0,
+    'sabe': 0
 }
 
 
