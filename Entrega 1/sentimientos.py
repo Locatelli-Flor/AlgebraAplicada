@@ -23,7 +23,10 @@ feelings_dictionary = {
     'troya': -1,
     'muerta': -1,
     'final': 0,
-    'via': 0
+    'via': 0,
+    'odio': -1,
+    'paz': 1,
+    'victoria': 1
 }
 
 def get_phrases(path):
