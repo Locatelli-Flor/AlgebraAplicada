@@ -1,15 +1,7 @@
 import cv2
-import os
 import matplotlib.pyplot as plt
+import numpy as np
 
-# Monta tu Google Drive a la máquina virtual de Colab.
-from google.colab import drive
-drive.mount('/content/drive', force_remount=True)
-
-# Cambiar el directorio actual al directorio donde se encuentra la tarea.
-# Especificar la ruta donde se van a guardar los archivos que pide la tarea.
-# Por ejemplo: '/content/drive/My Drive/Algebra Aplicada UCU'
-os.chdir('/content/drive/My Drive/UCU/Algebra') #Modificar esta línea
 
 def recortar_imagen_v2(ruta_img: str, ruta_img_crop: str, x_inicial: int, x_final: int, y_inicial: int, y_final: int)-> None:
     """
@@ -42,20 +34,143 @@ def recortar_imagen_v2(ruta_img: str, ruta_img_crop: str, x_inicial: int, x_fina
 
 
 # Cargar las imágenes
-img1 = cv2.imread('ruta_a_imagen1.jpg')
-img2 = cv2.imread('ruta_a_imagen2.jpg')
+def load_images(ruta_img1, ruta_im2):
+  img1 = cv2.imread(ruta_img1)
+  img2 = cv2.imread(ruta_im2)
+
+  return img1, img2
+
+
+def grayscale_converter(imagen):
+    return np.mean(imagen, axis=2).astype(np.uint8)
+
+
+def is_invertible(matriz):
+    det = np.linalg.det(matriz)
+    return det != 0
+
+
+def adjust_contrast(imagen, alpha):
+    imagen_contraste = alpha * imagen
+    return np.clip(imagen_contraste, 0, 255).astype(np.uint8)
+
+
+# Cargar las imágenes originales
+image_1_original, image_2_original = load_images("Entrega 2\imagenes\image_1_original.jpg", "Entrega 2\imagenes\image_2_original.jpg")
+
+if image_1_original is None or image_2_original is None:
+    print("Error al cargar las imágenes.")
+    exit()
+  
 
 # Mostrar las imágenes
 plt.subplot(1, 2, 1)
-plt.imshow(cv2.cvtColor(img1, cv2.COLOR_BGR2RGB))
-plt.title('Imagen 1')
+plt.imshow(cv2.cvtColor(image_1_original, cv2.COLOR_BGR2RGB))
+plt.title('Imagen 1 original')
 
 plt.subplot(1, 2, 2)
-plt.imshow(cv2.cvtColor(img2, cv2.COLOR_BGR2RGB))
-plt.title('Imagen 2')
+plt.imshow(cv2.cvtColor(image_2_original, cv2.COLOR_BGR2RGB))
+plt.title('Imagen 2 original')
 
 plt.show()
 
-#Imprimir el tamaño de las imágenes
-print(f'Tamaño de la imagen 1: {img1.shape}')
-print(f'Tamaño de la imagen 2: {img2.shape}')
+# Imprimir el tamaño de las imágenes
+print(f'Tamaño de la imagen 1: {image_1_original.shape}')
+print(f'Tamaño de la imagen 2: {image_2_original.shape}')
+
+# Mostrar una de las imágenes como matriz e imprimir su tamaño
+print('Matriz de la imagen 1:')
+print(image_1_original)
+print(f'Tamaño de la imagen 1: {image_1_original.shape}')
+
+# Transponer las imágenes
+image_1_traspuesta = np.transpose(image_1_original, axes=(1, 0, 2))
+image_2_traspuesta = np.transpose(image_2_original, axes=(1, 0, 2))
+
+# Mostrar las imágenes traspuestas
+plt.subplot(1, 2, 1)
+plt.imshow(cv2.cvtColor(image_1_traspuesta, cv2.COLOR_BGR2RGB))
+plt.title('Imagen 1 Traspuesta')
+
+plt.subplot(1, 2, 2)
+plt.imshow(cv2.cvtColor(image_2_traspuesta, cv2.COLOR_BGR2RGB))
+plt.title('Imagen 2 Traspuesta')
+
+plt.show()
+
+# Mostrar las imágenes en escala de grises
+image_1_gray = grayscale_converter(image_1_original)
+image_2_gray = grayscale_converter(image_2_original)
+
+plt.subplot(1, 2, 1)
+plt.imshow(image_1_gray, cmap='gray')
+plt.title('Imagen 1 en Escala de Grises')
+
+plt.subplot(1, 2, 2)
+plt.imshow(image_2_gray, cmap='gray')
+plt.title('Imagen 2 en Escala de Grises')
+
+plt.show()
+
+# Verificar si son invertibles y mostrar la inversa
+if is_invertible(image_1_gray):
+    inverse_image_1_gray = np.linalg.inv(image_1_gray)
+    print('La imagen 1 tiene inversa. Su determinante es:', np.linalg.det(image_1_gray))
+    print(inverse_image_1_gray) 
+else:
+    print('La imagen 1 no tiene inversa.')
+
+if is_invertible(image_2_gray):
+    inverse_image_2_gray = np.linalg.inv(image_2_gray)
+    print('La imagen 2 tiene inversa. Su determinante es:', np.linalg.det(image_2_gray))
+    print(inverse_image_2_gray)
+else:
+    print('La imagen 2 no tiene inversa.')
+
+# Producto de una matriz por un escalar
+
+# Caso 1: α > 1
+img_contraste_mayor = adjust_contrast(image_2_gray, 1.5)
+
+# Caso 2: 0 < α < 1
+img_contraste_menor = adjust_contrast(image_2_gray, 0.5)
+
+# Mostrar los resultados
+plt.subplot(1, 2, 1)
+plt.imshow(img_contraste_mayor, cmap='gray')
+plt.title('Contraste Aumentado')
+
+plt.subplot(1, 2, 2)
+plt.imshow(img_contraste_menor, cmap='gray')
+plt.title('Contraste Disminuido')
+
+plt.show()
+
+# Multipicación de matrices y prueba de que la multiplicación de matrices no es conmutativa
+W = np.fliplr(np.eye(image_1_gray.shape[0]))
+
+image_1_volteada = np.dot(W, image_1_gray)
+image_2_volteada = np.dot(W, image_2_gray)
+
+plt.subplot(1, 2, 1)
+plt.imshow(image_1_volteada, cmap='gray')
+plt.title('Imagen 1 Volteada')
+
+plt.subplot(1, 2, 2)
+plt.imshow(image_2_volteada, cmap='gray')
+plt.title('Imagen 2 Volteada')
+
+plt.show()
+
+# Imagen negativa
+negative_image_1 = 255 - image_1_gray
+negative_image_2 = 255 - image_2_gray
+
+plt.subplot(1, 2, 1)
+plt.imshow(negative_image_1, cmap='gray')
+plt.title('Imagen 1 Negativa')
+
+plt.subplot(1, 2, 2)
+plt.imshow(negative_image_2, cmap='gray')
+plt.title('Imagen 2 Negativa')
+plt.show()
