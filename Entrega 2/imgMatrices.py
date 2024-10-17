@@ -56,7 +56,7 @@ def adjust_contrast(imagen, alpha):
 
 
 # Cargar las imágenes originales
-image_1_original, image_2_original = load_images("Entrega 2\imagenes\image_1_original.jpg", "Entrega 2\imagenes\image_2_original.jpg")
+image_1_original, image_2_original = load_images(".\imagenes\image_1_original.jpg", ".\imagenes\image_2_original.jpg")
 
 if image_1_original is None or image_2_original is None:
     print("Error al cargar las imágenes.")
@@ -116,7 +116,7 @@ plt.show()
 if is_invertible(image_1_gray):
     inverse_image_1_gray = np.linalg.inv(image_1_gray)
     print('La imagen 1 tiene inversa. Su determinante es:', np.linalg.det(image_1_gray))
-    print(inverse_image_1_gray) 
+    print(inverse_image_1_gray)
 else:
     print('La imagen 1 no tiene inversa.')
 
