@@ -24,7 +24,7 @@ def construct_matrix_A(rows, cols):
 def gaussian_elimination_mod2(A, b):
     size = len(b)
     
-    # Eliminación gaussiana en Z_2
+    # Eliminación gaussiana
     for i in range(size):
         if A[i, i] == 0:
             for j in range(i+1, size):
@@ -58,7 +58,6 @@ def lights_out_solver(board):
     A = construct_matrix_A(rows, cols)
     b = board.flatten()
 
-    # Aplicamos la eliminación gaussiana en Z_2
     solution = gaussian_elimination_mod2(A, b)
     
     return solution
