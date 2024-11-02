@@ -25,7 +25,7 @@ def construct_matrix_a(n):
     return a_matrix
 
 # Aplica eliminación gaussiana en módulo 2 sin pivoteo.
-def gaussian_elimination_mod2_custom(a_matrix, b_vector):
+def gaussian_elimination_mod2(a_matrix, b_vector):
     size = len(b_vector)
 
     for i in range(size):
@@ -63,7 +63,7 @@ def lights_out_solver(board_matrix):
     a_matrix = construct_matrix_a(n)
     b_vector = board_matrix.flatten()
     
-    solution_vector = gaussian_elimination_mod2_custom(a_matrix.copy(), b_vector.copy())
+    solution_vector = gaussian_elimination_mod2(a_matrix.copy(), b_vector.copy())
     
     return solution_vector
 
@@ -123,5 +123,4 @@ def main():
     except ValueError as e:
         print("Entrada inválida:", e)
 
-if __name__ == "__main__":
-    main()
+main()
