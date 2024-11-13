@@ -7,8 +7,10 @@ alphabet = {
     'N': 13, 'Ñ': 14, 'O': 15, 'P': 16, 'Q': 17, 'R': 18, 'S': 19, 'T': 20, 'U': 21, 'V': 22, 'W': 23, 'X': 24,
     'Y': 25, 'Z': 26, ' ': 27, '*': 28
 }
+
 # Diccionario inverso
 alphabet_reverse = {v: k for k, v in alphabet.items()}
+
 
 # Función para limpiar texto y convertir a mayúsculas
 def clean_text(text):
@@ -48,11 +50,13 @@ def decrypt(encrypted_text, a, b):
     return ''.join(decrypted_text)
 
 
-# Función para contar frecuencias y posiciones
+# Función para contar la frecuencia de letras y encontrar la más repetida junto con sus posiciones
 def letter_frequency(text):
     freq = Counter(text)
-    positions = {char: [i for i, letter in enumerate(text) if letter == char] for char in freq}
-    return freq, positions
+    most_common_letter, _ = freq.most_common(1)[0]
+    positions = [i for i, letter in enumerate(text) if letter == most_common_letter]
+    return most_common_letter, positions
+
 
 # Ejemplo de ejecución
 text = """Es por mi que se va a la ciudad del llanto, es por mi que se va al dolor eterno y al lugar 
@@ -64,15 +68,23 @@ b = 2
 
 # Cifrar el texto
 encrypted_text = encrypt(text, a, b)
-print("Texto encriptado:", encrypted_text)
+print("Texto encriptado:", encrypted_text, '\n')
 
 # Desencriptar el texto
 decrypted_text = decrypt(encrypted_text, a, b)
-print("Texto desencriptado:", decrypted_text)
+print("Texto desencriptado:", decrypted_text, '\n')
 
 # Análisis en el texto original y encriptado
-original_freq, original_positions = letter_frequency(text)
 encrypted_freq, encrypted_positions = letter_frequency(encrypted_text)
 
-print("Frecuencia y posiciones en el texto original:", original_freq, original_positions)
-print("Frecuencia y posiciones en el texto encriptado:", encrypted_freq, encrypted_positions)
+original_most_repited, original_positions = letter_frequency(text)
+
+if original_most_repited == ' ':
+    original_most_repited = 'espacio'
+
+print("Letra más repetida en el texto original:", original_most_repited)
+print("Posiciones de la letra más repetida en el texto original:", original_positions, '\n')
+
+encrypted_most_repited, encrypted_positions = letter_frequency(encrypted_text)
+print("Letra más repetida en el texto encriptado:", encrypted_most_repited)
+print("Posiciones de la letra más repetida en el texto encriptado:", encrypted_positions)
